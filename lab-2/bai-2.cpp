@@ -2,7 +2,6 @@
 #include <fstream>
 #include <vector>
 
-
 void generate_data()
 {
     std::fstream output_file("input.txt", std::ios::out);
@@ -31,32 +30,22 @@ void swap(long &a, long &b)
     b = temp;
 }
 
-void bubble_sort(long arr[], int n)
+void selection_sort(std::vector<long> &arr)
 {
+    int n = arr.size();
     for (int i = 0; i < n - 1; i++)
     {
-        for (int j = n - 1; j >= i; j--)
+        int min_index = i;
+
+        for (int j = i + 1; j < n; j++)
         {
-            if (arr[j - 1] < arr[j])
+            if (arr[j] < arr[min_index])
             {
-                swap(arr[j - 1], arr[j]);
+                min_index = j;
             }
         }
-    }
-}
 
-void bubble_sort_vector(std::vector<long>& arr)
-{
-
-    for (int i = 0; i < arr.size(); i++)
-    {
-        for (int j = arr.size() - 1; j > i; j--)
-        {
-            if (arr[j - 1] < arr[j])
-            {
-                swap(arr[j - 1], arr[j]);
-            }
-        }
+        swap(arr[i], arr[min_index]);
     }
 }
 
@@ -80,9 +69,9 @@ int main(int argc, char **args)
 
     input_file.close();
 
-    bubble_sort_vector(arr);
+    selection_sort(arr);
 
-    std::fstream output_file("output-1.txt", std::ios::out);
+    std::fstream output_file("output-2.txt", std::ios::out);
     for (int i = 0; i < n; i++)
     {
         output_file << arr[i] << " ";
