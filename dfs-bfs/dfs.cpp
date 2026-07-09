@@ -38,7 +38,7 @@ int main(int argc, char const *argv[])
         int u = 0, v = 0;
         input_file >> u >> v;
         arr[u][v] = 1;
-        arr[v][u] = 1; 
+        arr[v][u] = 1;
     }
 
     input_file.close();
@@ -51,15 +51,15 @@ int main(int argc, char const *argv[])
 
     DFS(s, V);
 
-    if (visit[f])
+    int p = f;
+    if (trace[p] != 0)
     {
-        int p = f;
         while (p != s)
         {
-            std::cout << p << " <-- ";
+            std::cout << p << "<--";
             p = trace[p];
         }
-        std::cout << s << std::endl;
+        std::cout << s;
     }
     return 0;
 }

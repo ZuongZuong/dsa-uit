@@ -1,22 +1,11 @@
 #include <iostream>
 #include <fstream>
+#include <queue>
 
 int arr[1001][1001];
 int trace[1001];
 bool visit[1001];
-
-void DFS(int u, int V)
-{
-    visit[u] = true;
-    for (int v = 1; v <= V; v++)
-    {
-        if (!visit[v] && arr[u][v] == 1)
-        {
-            trace[v] = u;
-            DFS(v, V);
-        }
-    }
-}
+std::queue<int> q; 
 
 int main(int argc, char const *argv[])
 {
@@ -49,17 +38,35 @@ int main(int argc, char const *argv[])
         trace[v] = 0;
     }
 
-    DFS(s, V);
+    q.push(s);
 
-    if (visit[f])
+    while (!q.empty())
     {
-        int p = f;
+        int u = q.front();
+        q.pop();
+        for (size_t v = 1; v <= V; v++)
+        {
+            if (!visit[v] && (arr[u][v] == 1))
+            {
+                trace[v] = u;
+                visit[v] = true;
+                q.push(v);
+            }
+            
+        }
+        
+    }
+    
+    int p = f;
+    if (trace[p] != 0)
+    {
         while (p != s)
         {
-            std::cout << p << " <-- ";
+            std::cout << p << "<--";
             p = trace[p];
         }
-        std::cout << s << std::endl;
+        std::cout<< s;
     }
+    
     return 0;
 }
