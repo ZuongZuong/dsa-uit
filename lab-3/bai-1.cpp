@@ -1,6 +1,3 @@
-#include <string>
-#include <stdio.h>
-#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 
@@ -11,9 +8,8 @@ public:
     Node *next;
 
     Node(long value, Node *next = nullptr)
+        : value(value), next(next)
     {
-        this->value = value;
-        this->next = next;
     }
 };
 
@@ -23,9 +19,19 @@ private:
     Node *head;
 
 public:
-    Stack()
+    Stack() : head(nullptr)
     {
-        head = nullptr;
+    }
+
+    Stack(const Stack &) = delete;
+    Stack &operator=(const Stack &) = delete;
+
+    ~Stack()
+    {
+        while (!isEmpty())
+        {
+            pop();
+        }
     }
 
     void push(long value)
@@ -37,12 +43,11 @@ public:
     {
         if (isEmpty())
         {
-            std::cout << "Stack is empty!" << std::endl;
-            return -1;
+            throw std::runtime_error("Stack is empty.");
         }
 
         Node *temp = head;
-        long value = head->value;
+        long value = temp->value;
 
         head = head->next;
         delete temp;
@@ -50,23 +55,22 @@ public:
         return value;
     }
 
-    long peek()
+    long peek() const
     {
         if (isEmpty())
         {
-            std::cout << "Stack is empty!" << std::endl;
-            return -1;
+            throw std::runtime_error("Stack is empty.");
         }
 
         return head->value;
     }
 
-    bool isEmpty()
+    bool isEmpty() const
     {
         return head == nullptr;
     }
 
-    void print()
+    void print() const
     {
         Node *current = head;
 
@@ -80,21 +84,60 @@ public:
     }
 };
 
-int main(int argc, char const *argv[])
+char digit(long value)
 {
-    std::fstream input_file("input.txt", std::ios::in);
-    int n, r;
+    if (value < 10)
+        return '0' + value;
+
+    return 'A' + (value - 10);
+}
+
+int main()
+{
+    std::ifstream input_file("input.txt");
+
+    if (!input_file)
+    {
+        std::cout << "Cannot open input.txt" << std::endl;
+        return 1;
+    }
+
+    long n;
+    int r;
+
     input_file >> n >> r;
+
+    if (r < 2 || r > 36)
+    {
+        std::cout << "Base must be between 2 and 36." << std::endl;
+        return 1;
+    }
 
     Stack s;
 
-    while (n > 0)
+    if (n == 0)
     {
-        s.push(n % r);
-        n /= r;
+        s.push(0);
+    }
+    else
+    {
+        while (n > 0)
+        {
+            s.push(n % r);
+            n /= r;
+        }
     }
 
-    s.print();
+    std::cout << "Result: ";
+
+    while (!s.isEmpty())
+    {
+        std::cout << digit(s.pop());
+    }
+
+    std::cout << std::endl;
+
+    input_file.close();
 
     return 0;
 }

@@ -1,32 +1,15 @@
-#include <string>
-#include <stdio.h>
-#include <stdlib.h>
 #include <iostream>
-#include <fstream>
 
 class Node
 {
 public:
-    long value;
+    int data;
     Node *next;
 
-    Node(long value, Node *next = nullptr)
+    Node(int data)
     {
-        this->value = value;
-        this->next = next;
-    }
-};
-
-class Node
-{
-public:
-    int value;
-    Node *next;
-
-    Node(int value)
-    {
-        this->value = value;
-        next = nullptr;
+        this->data = data;
+        this->next = nullptr;
     }
 };
 
@@ -35,23 +18,115 @@ class Queue
 private:
     Node *front;
     Node *rear;
+    int count;
 
 public:
     Queue()
     {
         front = rear = nullptr;
+        count = 0;
     }
 
+    ~Queue()
+    {
+        while (!isEmpty())
+        {
+            dequeue();
+        }
+    }
+
+    bool isEmpty()
+    {
+        return front == nullptr;
+    }
+
+    int size()
+    {
+        return count;
+    }
+
+    void enqueue(int value)
+    {
+        Node *newNode = new Node(value);
+
+        if (isEmpty())
+        {
+            front = rear = newNode;
+        }
+        else
+        {
+            rear->next = newNode;
+            rear = newNode;
+        }
+
+        count++;
+    }
+
+    int dequeue()
+    {
+        if (isEmpty())
+        {
+            std::cout << "Queue is empty!" << std::endl;
+            return -1;
+        }
+
+        Node *temp = front;
+        int value = front->data;
+
+        front = front->next;
+
+        if (front == nullptr)
+        {
+            rear = nullptr;
+        }
+
+        delete temp;
+        count--;
+
+        return value;
+    }
+
+    int peek()
+    {
+        if (isEmpty())
+        {
+            return -1;
+        }
+
+        return front->data;
+    }
 };
 
-int main(int argc, char const *argv[])
+int main()
 {
-    std::fstream input_file("input.txt", std::ios::in);
-    int n, r;
-    input_file >> n >> r;
+    int n, k;
+
+    std::cout << "Enter number of people (n): ";
+    std::cin >> n;
+
+    std::cout << "Enter step (k): ";
+    std::cin >> k;
 
     Queue q;
 
+    for (int i = 1; i <= n; i++)
+    {
+        q.enqueue(i);
+    }
+
+    while (q.size() > 1)
+    {
+        for (int i = 1; i < k; i++)
+        {
+            int person = q.dequeue();
+            q.enqueue(person);
+        }
+
+        int eliminated = q.dequeue();
+        std::cout << "Eliminated: " << eliminated << std::endl;
+    }
+
+    std::cout << "\nSurvivor: " << q.peek() << std::endl;
 
     return 0;
 }
